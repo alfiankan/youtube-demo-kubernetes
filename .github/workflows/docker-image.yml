@@ -1,0 +1,17 @@
+name: Build Push Docker Image
+on:
+  push:
+    branches:
+      — 'main'
+    tags:
+      — '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build ./dump-env-app --file ./dump-env-app/Dockerfile --tag alfiantech/env-dump:${{github.ref_name}}
+    - name: push to dockerhub
+      run: docker push alfiantech/env-dump:${{github.ref_name}}
