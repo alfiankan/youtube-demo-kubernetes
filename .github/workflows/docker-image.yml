@@ -41,7 +41,7 @@ jobs:
         run: |
           ./crab -f deployment.yaml \
           -r namespace=production \
-          -r image=alfiantech/env-dump:$({ steps.meta.outputs.tags }) \
+          -r image=alfiantech/env-dump:$(steps.meta.outputs.tags) \
           -o deployment.yaml \
           -v
       - name: view manifest
