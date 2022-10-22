@@ -45,6 +45,8 @@ jobs:
       run: ./crab -f deployment.yaml -r namespace=production -r image=alfiantech/env-dump:${{steps.meta.outputs.tags}} -o prod.yaml -v
     - name: view manifest
       run: cat prod.yaml
+    - name: check tag
+      run: echo ${{steps.meta.outputs.tags}}
     - name: verify deployment
       uses: steebchen/kubectl@v2.0.0
       with:
