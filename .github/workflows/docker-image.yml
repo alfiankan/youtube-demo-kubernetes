@@ -31,8 +31,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: get tag name
-        run: export TAG_NAME=$(steps.meta.outputs.tags)
-
+        env:
+          TAG_NAME: ${{ steps.meta.outputs.tags }}
 
   update_deployment:
     name: Update k3s deployment
@@ -44,7 +44,7 @@ jobs:
     - name: install crab cli
       run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
     - name: check tag
-      run: echo $(echo $TAG_NAME)
+      run: echo $TAG_NAME
     - name: recreate deployment manifest on test
       run: ./crab -f deployment.yaml -r namespace=production -r image=alfiantech/env-dump:$(echo $TAG_NAME) -o prod.yaml -v
     - name: view manifest
