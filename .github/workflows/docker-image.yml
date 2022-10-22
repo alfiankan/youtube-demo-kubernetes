@@ -39,6 +39,11 @@ jobs:
     steps:
     - name: Check out the repo
       uses: actions/checkout@v3
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v2
+      with:
+        images: alfiantech/env-dump
     - name: install crab cli
       run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
     - name: recreate deployment manifest on test
