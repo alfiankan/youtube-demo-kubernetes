@@ -30,10 +30,27 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  set_manifest:
+    runs-on: ubuntu-latest
+    needs: push_to_registry
+    steps:
+      - uses: actions/checkout@v3
+      - name: install crab cli
+        run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
+      - name: recreate deployment manifest on test
+        run: |
+          ./crab -f deployment.yaml \
+          -r namespace=production \
+          -r image=alfiantech/env-dump:${{ steps.meta.outputs.tags }} \
+          -o deployment.yaml \
+          -v
+      - name: view manifest
+        run: cat deployment.yaml
           
   update_deployment:
     name: Update k3s deployment
-    needs: push_to_registry
+    needs: set_manifest
     runs-on: ubuntu-latest
     steps:
     - name: verify deployment
