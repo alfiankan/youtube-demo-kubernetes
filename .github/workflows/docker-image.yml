@@ -33,6 +33,7 @@ jobs:
       - name: get tag name
         env:
           TAG_NAME: ${{ steps.meta.outputs.tags }}
+        run: echo $TAG_NAME
 
   update_deployment:
     name: Update k3s deployment
