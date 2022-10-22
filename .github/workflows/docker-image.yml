@@ -33,6 +33,7 @@ jobs:
 
   update_deployment:
     name: Update k3s deployment
+    if: ${{ github.event.release }}
     needs: push_to_registry
     runs-on: ubuntu-latest
     steps:
