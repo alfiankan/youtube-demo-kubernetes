@@ -30,10 +30,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: get tag name
-        env:
-          TAG_NAME: ${{ steps.meta.outputs.tags }}
-        run: echo $TAG_NAME
 
   update_deployment:
     name: Update k3s deployment
@@ -44,10 +40,10 @@ jobs:
       uses: actions/checkout@v3
     - name: install crab cli
       run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
-    - name: check tag
-      run: echo $TAG_NAME
+    - uses: little-core-labs/get-git-tag@v3.0.1
+      id: tagName
     - name: recreate deployment manifest on test
-      run: ./crab -f deployment.yaml -r namespace=production -r image=alfiantech/env-dump:$(echo $TAG_NAME) -o prod.yaml -v
+      run: ./crab -f deployment.yaml -r namespace=production -r image=alfiantech/env-dump:$GIT_TAG_NAME -o prod.yaml -v
     - name: view manifest
       run: cat prod.yaml
     - name: verify deployment
