@@ -8,8 +8,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o /app
+RUN go build -o /app/app
 
 EXPOSE 8000
 
-CMD [ "/app" ]
+CMD [ "/app/app" ]
