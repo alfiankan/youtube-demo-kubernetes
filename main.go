@@ -21,7 +21,7 @@ func main() {
 		return c.String(http.StatusOK, string(envs))
 	})
 	e.GET("/version", func(c echo.Context) error {
-		return c.String(http.StatusOK, fmt.Sprintf("v2.0.0   => %s", os.Getenv("HOSTNAME")))
+		return c.String(http.StatusOK, fmt.Sprintf("v3.0.0   => %s", os.Getenv("HOSTNAME")))
 	})
 	e.Logger.Fatal(e.Start(":8000"))
 }

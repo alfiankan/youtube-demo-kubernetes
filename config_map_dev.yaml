@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: production
+  namespace: dev 
   name: web-config
 data:
   database_name: "midnights"
