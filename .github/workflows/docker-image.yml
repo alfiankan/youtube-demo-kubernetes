@@ -31,27 +31,25 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  set_manifest:
-    runs-on: ubuntu-latest
+
+  update_deployment:
+    name: Update k3s deployment
     needs: push_to_registry
+    runs-on: ubuntu-latest
     steps:
-      - name: install crab cli
-        run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
-      - name: recreate deployment manifest on test
-        run: |
+    - name: Check out the repo
+      uses: actions/checkout@v3
+    - name: install crab cli
+      run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
+    - name: recreate deployment manifest on test
+      run: |
           ./crab -f deployment.yaml \
           -r namespace=production \
           -r image=alfiantech/env-dump:$(steps.meta.outputs.tags) \
           -o prod.yaml \
           -v
-      - name: view manifest
-        run: cat prod.yaml
-          
-  update_deployment:
-    name: Update k3s deployment
-    needs: set_manifest
-    runs-on: ubuntu-latest
-    steps:
+    - name: view manifest
+      run: cat prod.yaml
     - name: verify deployment
       uses: steebchen/kubectl@v2.0.0
       with:
