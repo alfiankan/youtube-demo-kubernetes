@@ -31,9 +31,31 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  
+  update_deployment_dev:
+    name: Update k3s deployment dev
+    needs: push_to_registry
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v3
+    - name: install crab cli
+      run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
+    - uses: little-core-labs/get-git-tag@v3.0.1
+      id: tagName
+    - name: recreate deployment manifest on test
+      run: ./crab -f deployment.yaml -r namespace=dev -r image=alfiantech/env-dump:$GIT_TAG_NAME -o prod.yaml -v
+    - name: view manifest
+      run: cat prod.yaml
+    - name: verify deployment
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_CONFIG_DATA }}
+        version: v1.21.0 
+        command: apply -f prod.yaml
 
-  update_deployment:
-    name: Update k3s deployment
+  release_deployment_production:
+    name: Update k3s deployment production
     if: ${{ github.event.release }}
     needs: push_to_registry
     runs-on: ubuntu-latest
