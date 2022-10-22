@@ -20,7 +20,7 @@ func main() {
 	})
 	e.GET("/version", func(c echo.Context) error {
 
-		return c.String(http.StatusOK, "v1.0.0")
+		return c.String(http.StatusOK, "v1.1.0")
 	})
 	e.Logger.Fatal(e.Start(":8000"))
 }
