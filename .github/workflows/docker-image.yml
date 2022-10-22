@@ -30,6 +30,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: get tag name
+        run: export TAG_NAME=$(steps.meta.outputs.tags)
 
 
   update_deployment:
@@ -39,19 +41,14 @@ jobs:
     steps:
     - name: Check out the repo
       uses: actions/checkout@v3
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action@v2
-      with:
-        images: alfiantech/env-dump
     - name: install crab cli
       run: wget -c https://github.com/alfiankan/crab-config-files-templating/releases/download/v1.0.5/crab-v1.0.5-linux-amd64.tar.gz -O - | tar -xz crab
+    - name: check tag
+      run: echo $(echo $TAG_NAME)
     - name: recreate deployment manifest on test
-      run: ./crab -f deployment.yaml -r namespace=production -r image=alfiantech/env-dump:$(steps.meta.outputs.tags) -o prod.yaml -v
+      run: ./crab -f deployment.yaml -r namespace=production -r image=alfiantech/env-dump:$(echo $TAG_NAME) -o prod.yaml -v
     - name: view manifest
       run: cat prod.yaml
-    - name: check tag
-      run: echo $(steps.meta.outputs.tags) 
     - name: verify deployment
       uses: steebchen/kubectl@v2.0.0
       with:
