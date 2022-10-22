@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+data:
+  database_name: "midnights"
+  user_service_host: "user.svc.cluster.local"
+

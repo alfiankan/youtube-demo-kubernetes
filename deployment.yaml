@@ -24,6 +24,17 @@ spec:
             imagePullPolicy: "Always"
             ports:
               - containerPort: 8000
+            env:
+              - name: DB_NAME
+                valueFrom:
+                  configMapKeyRef:
+                    name: web-config
+                    key: database_name
+              - name: USER_SERVICE_HOST
+                valueFrom:
+                  configMapKeyRef:
+                    name: web-config
+                    key: user_service_host
 
 ---
 apiVersion: v1
