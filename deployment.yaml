@@ -36,6 +36,6 @@ spec:
     ports:
       - targetPort: 8000
         name: apihttp
-        port: 8001
+        port: {{service_port}}
     selector:
       app: web-api
