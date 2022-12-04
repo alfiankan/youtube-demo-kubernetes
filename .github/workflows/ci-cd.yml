@@ -20,7 +20,9 @@ jobs:
       - name: Log in to GHCR
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITUB_PAT }}      
       - name: generate tag
-        run: if [ $steps.meta.outputs.tags != "" ]; then export TAG=${{ steps.meta.outputs.tags }}; fi
+        env:
+          STEP_TAG: ${{ steps.meta.outputs.tags }}
+        run: if [ $STEP_TAG != "" ]; then export TAG=${{ steps.meta.outputs.tags }}; fi
       - name: Build and push Docker image
         run: |
           
