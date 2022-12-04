@@ -1,7 +1,7 @@
 name: Publish Docker image
 on:
   create:
-    tags: [ 'v*.*.*' ]
+    tags:
   release:
     types: [published]
 
@@ -14,19 +14,22 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
       
-      - name: Log in to GHCR
-        run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITUB_PAT }}      
-        
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: USERNAME
+          password: ${{ secrets.GITUB_PAT }} 
+      
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v2
         with:
           images: ghcr.io/alfiandra/${{ github.event.repository.name }}
-          
+      
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./majelisit_service
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
