@@ -20,7 +20,7 @@ jobs:
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
         run: |
-          docker build -f majelist_service/Dockerfile -t ghcr.io/alfiandra/${{ github.event.repository.name }}:latest 
+          docker build -t ghcr.io/alfiandra/${{ github.event.repository.name }}:latest ./majelist_service
           docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:latest
           if [ $TAGS != "" ]; then
             docker tag ghcr.io/alfiandra/${{ github.event.repository.name }}:latest ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }}
