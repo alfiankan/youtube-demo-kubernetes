@@ -6,8 +6,6 @@ on:
   release:
     types: [published]
 
-env:
-  TAG: latest
   
 jobs:
   build_push:
@@ -19,15 +17,11 @@ jobs:
       
       - name: Log in to GHCR
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITUB_PAT }}      
-      - name: generate tag
-        env:
-          STEP_TAG: ${{ steps.meta.outputs.tags }}
-        run: if [ $STEP_TAG != "" ]; then export TAG=$STEP_TAG; fi
       - name: Build and push Docker image
         run: |
           
-          docker build -t ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ env.TAG }} ./majelist_service
-          docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ env.TAG }}
+          docker build -t ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }} ./majelist_service
+          docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }}
 
 
   update_deployment_staging:
