@@ -1,7 +1,6 @@
 name: Publish Docker image
 on:
   push:
-    branches: "main"
     tags: [ 'v*.*.*' ]
   release:
     types: [published]
@@ -19,7 +18,6 @@ jobs:
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITUB_PAT }}      
       - name: Build and push Docker image
         run: |
-          
           docker build -t ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }} ./majelist_service
           docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }}
 
