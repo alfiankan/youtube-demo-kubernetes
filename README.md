@@ -1,4 +1,6 @@
 # youtube-demo-ci-cd-k3s
 kubentes
 
-Tutorial. bisa dilihat di https://youtu.be/bSKqYq6_P50
+
+1. minikube start
+2. minikube image load majelisit/quote:latest
