@@ -17,10 +17,16 @@ jobs:
       - name: Log in to GHCR
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITUB_PAT }}      
       - name: Build and push Docker image
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
         run: |
-          docker build -t ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }} .
-          docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }}
-          
+          docker build -t ghcr.io/alfiandra/${{ github.event.repository.name }}:latest .
+          docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:latest
+          if [ $TAGS != "" ]; then
+            docker tag ghcr.io/alfiandra/${{ github.event.repository.name }}:latest ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }} .
+            docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ steps.meta.outputs.tags }}
+          fi
+
 
   update_deployment_staging:
     name: Update staging env
