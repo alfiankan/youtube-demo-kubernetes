@@ -1,9 +1,9 @@
 name: Publish Docker image
 on:
+  push:
+    tags:
   release:
     types: [published]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build_push:
@@ -28,7 +28,6 @@ jobs:
           
       
       - name: Build and push Docker image
-        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v2
         with:
           context: ./majelist_service
@@ -36,14 +35,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Latest image
-        if: github.event_name == 'pull_request'
-        uses: docker/build-push-action@v2
-        with:
-          context: ./majelist_service
-          push: true
-          tags: latest
-          labels: ${{ steps.meta.outputs.labels }}
           
 
   update_deployment_staging:
