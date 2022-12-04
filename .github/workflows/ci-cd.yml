@@ -16,11 +16,13 @@ jobs:
       
       - name: Log in to GHCR
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITUB_PAT }}      
-      - name: Build and push Docker image
+      - name: generate tag
         env:
           TAG: ${{ steps.meta.outputs.tags }}
+        run: if [ $TAG == "" ]; then export TAG=latest; fi
+      - name: Build and push Docker image
         run: |
-          if [ $TAG == "" ]; then export TAG=latest; fi
+          
           docker build -t ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ env.TAG }} ./majelist_service
           docker push ghcr.io/alfiandra/${{ github.event.repository.name }}:${{ env.TAG }}
 
