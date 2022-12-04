@@ -25,13 +25,31 @@ jobs:
         uses: docker/metadata-action@v2
         with:
           images: ghcr.io/alfiandra/${{ github.event.repository.name }}
+          
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
       
       - name: Build and push Docker image
+        if: github.event_name != 'pull_request'
         uses: docker/build-push-action@v2
         with:
           context: ./majelist_service
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Latest image
+        if: github.event_name == 'pull_request'
+        uses: docker/build-push-action@v2
+        with:
+          context: ./majelist_service
+          push: true
+          tags: latest
           labels: ${{ steps.meta.outputs.labels }}
           
 
