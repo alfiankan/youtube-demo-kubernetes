@@ -5,11 +5,19 @@ on:
   release:
     types: [published]
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
+  tests:
+    name: Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: unit testing
+      - run: echo "testing"
+    
   build_push:
     name: Push Docker image to Docker Hub
+    needs: [tests]
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -27,6 +35,7 @@ jobs:
         uses: docker/metadata-action@v2
         with:
           images: ghcr.io/alfiandra/${{ github.event.repository.name }}
+          
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
@@ -35,6 +44,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
           
 
   update_deployment_staging:
