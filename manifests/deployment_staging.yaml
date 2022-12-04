@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: majelisit-quotes
+    namespace: staging
+spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: majelisit-quotes
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 50%
+          maxUnavailable: 50%
+    template:
+      metadata:
+        labels:
+          app: majelisit-quotes
+      spec:
+        containers:
+          - name: majelisit-quotes
+            image: docker.io/majelisit/quote:latest
+            imagePullPolicy: "Always"
+            ports:
+              - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: majelisit-quotes
+    namespace: staging
+spec:
+    type: LoadBalancer
+    ports:
+      - targetPort: 3000
+        name: apihttp
+        port: 8085
+    selector:
+      app: majelisit-quotes

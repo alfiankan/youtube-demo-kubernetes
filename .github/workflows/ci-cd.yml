@@ -1,0 +1,65 @@
+name: Publish Docker image
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+  release:
+    types: [published]
+  pull_request:
+    branches: ['main']
+
+jobs:
+  tests:
+    name: Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: unit testing
+      - run: echo "testing"
+    
+  build_push:
+    name: Push Docker image to Docker Hub
+    needs: [tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: USERNAME
+          password: ${{ secrets.GITUB_PAT }} 
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v2
+        with:
+          images: ghcr.io/alfiandra/${{ github.event.repository.name }}
+          
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./majelist_service
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+          
+
+  update_deployment_staging:
+    name: Update staging env
+    needs: build_push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Update staging env
+      run: echo "update staging"
+
+  update_deployment_production:
+    name: Update production env
+    if: ${{ github.event.release }}
+    needs: build_push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Update production env
+      run: echo "update production"
