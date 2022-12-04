@@ -6,6 +6,9 @@ on:
   release:
     types: [published]
 
+env:
+  TAG: latest
+  
 jobs:
   build_push:
     name: Push Docker image to Docker Hub
@@ -17,9 +20,7 @@ jobs:
       - name: Log in to GHCR
         run: docker login ghcr.io -u USERNAME -p ${{ secrets.GITUB_PAT }}      
       - name: generate tag
-        env:
-          TAG: ${{ steps.meta.outputs.tags }}
-        run: if [ $TAG == "" ]; then export TAG=latest; fi
+        run: if [ $steps.meta.outputs.tags != "" ]; then export TAG=${{ steps.meta.outputs.tags }}; fi
       - name: Build and push Docker image
         run: |
           
