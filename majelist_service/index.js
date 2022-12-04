@@ -5,7 +5,7 @@ const app = express()
 const port = 3000
 
 app.get('/health', (req, res) => {
-  res.status(200).send("v1.0.0")
+  res.status(200).send("v2.0.0")
 })
 
 app.get('/quotes', (req, res) => {
